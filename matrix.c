@@ -1,8 +1,8 @@
 /*
 ============================================================
   Fichero: matrix.c
-  Creado: 23-04-2025
-  Ultima Modificacion: divendres, 25 d’abril de 2025, 14:27:44
+  Creado: 28-04-2025
+  Ultima Modificacion: dimarts, 29 d’abril de 2025, 12:29:56
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -15,60 +15,61 @@ struct Node {
 };
 
 struct Matrix {
-	u1 size;
-	u2* values;
-	struct Node* first;
-	struct Node* last;
+	u1 rs,cs;
+	u2* mini;
+	struct Node* top;
+	struct Node* bot;
 };
 
-static u1 nodpsh(struct Matrix* m,u1 r,u1 c) {
-	struct Node* n=malloc(sizeof(struct Node));
-	if(n) {
-		n->r=r;
-		n->c=c;
-		n->nxt=NULL;
-		if(m->first) {
-			m->last->nxt=n;
-			m->last=n;
-		} else {
-			m->first=m->last=n;
+//mini es un cuadrado 4x4 de 16 bits, rs y cs dan las columnas y las filas que tiene mini
+
+static u1 nodpsh(Matrix m,u1 r,u1 c) {
+	struct Node* nn=malloc(sizeof(struct Node));
+	if(nn) {
+		nn->r=r;
+		nn->c=c;
+		nn->nxt=NULL;
+		if(!m->bot) m->bot=m->top=nn;
+		else {
+			m->bot->nxt=nn;
+			m->bot=nn;
 		}
 		return 1;
 	}
 	return 0;
 }
 
-static u1 nodpop(struct Matrix* m,u1* r,u1* c) {
-	if(m && m->first) {
-		struct Node* td=m->first;
-		m->first=m->first->nxt;
-		if(m->first==NULL) m->last=NULL;
+static u1 nodpop(Matrix m,u1* r,u1* c,u2* v) {
+	if(m->top) {
+		struct Node* td=m->top;
+		m->top=m->top->nxt;
+		if(!m->top) m->bot=NULL;
 		*r=td->r;
 		*c=td->c;
+		*v=*(m->mini+(td->c+td->r*m->cs));
 		free(td);
 		return 1;
-	} 
+	}
 	return 0;
 }
 
-static void noddel(struct Node* node) {
-	if(node) {
-		noddel(node->nxt);
-		free(node);
+static void noddel(struct Node* n) {
+	if(n) {
+		noddel(n->nxt);
+		free(n);
 	}
 }
 
-Matrix mtrxnew(u1 s) {
-	struct Matrix* m=malloc(sizeof(struct Matrix));
+Matrix mtrnew(u1 rs,u1 cs) {
+	Matrix m=malloc(sizeof(struct Matrix));
 	if(m) {
-		m->values=malloc(sizeof(u2)*s*s);
-		if(m->values) {
-			u2* ptr=m->values;
-			while(ptr!=m->values+s*s) {
-				*ptr++=0;
-			}
-			m->size=s;
-			m->first=m->last=NULL;
+		m->mini=malloc(sizeof(u2)*rs*cs);
+		if(m->mini) {
+			u2* ptr=m->mini;
+			while(ptr!=m->mini+rs*cs) *ptr++=0;
+			m->rs=rs;
+			m->cs=cs;
+			m->top=m->bot=NULL;
 		} else {
 			free(m);
 			m=NULL;
@@ -77,149 +78,61 @@ Matrix mtrxnew(u1 s) {
 	return m;
 }
 
-void mtrxdel(Matrix* m) {
+void mtrdel(Matrix* m) {
 	if(m && *m) {
-		free((*m)->values);
-		noddel((*m)->first);
-		free(*m);
+		noddel((*m)->top);
+		free((*m)->mini);
+		free((*m));
 		*m=NULL;
 	}
 }
 
-u1 mtrxset(Matrix m,u1 r,u1 c,u2 v) {
-	if(m && r<m->size && c<m->size) {
-		u2* value=m->values+c+r*m->size;
-		if(*value!=v) {
-			*value=v;
+u1 mtrdim(Matrix m,u1* rs,u1* cs) {
+	if(m) {
+		*rs=m->rs;
+		*cs=m->cs;
+		return 1;
+	}
+	return 0;
+}
+
+#define inlim(A,L) ((A)<(L))
+#define inm(A,B,M) (inlim((A),(M)->rs) && inlim((B),(M)->cs))
+
+u1 mtrset(Matrix m,u1 r,u1 c,u2 v) {
+	if(m && inm(r,c,m)) {
+		u2* val=m->mini+c+r*m->cs;
+		if(*val!=v) {
+			*val=v;
 			nodpsh(m,r,c);
-		}
-		return 1;
-	}
-	return 0;
-}
-
-u1 mtrxget(Matrix m,u1 r,u1 c,u2* v) {
-	if(m && r<m->size && c<m->size) {
-		*v=*(m->values+c+r*m->size);
-		return 1;
-	}
-	return 0;
-}
-
-#define AND 1
-#define OR 2
-#define XOR 3
-
-static u1 mtrxopr(Matrix d,u1 rd,u1 cd,Matrix o,u1 not_con,u1 op) {
-	if(d && o) {
-		u2* pval=o->values;
-		while(pval!=o->values+(o->size*o->size)) {
-			u4 pos=pval-o->values;
-			u1 r=pos/o->size;
-			u1 c=pos%o->size;
-			u2 val=*pval;
-			val=(not_con)?~val:val;
-			u2* des=d->values+((c+cd)+(r+rd)*d->size);
-			u2 vprv=*des;
-			switch(op) {
-				case AND:
-					*des=*des & val;
-					break;
-				case OR:
-					*des=*des | val;
-					break;
-				default:
-					*des=*des ^ val;
-			}
-			if(vprv!=*des) nodpsh(d,r+rd,c+cd);
-			pval++;
-		}
-		return 1;
-	}
-	return 0;
-}
-
-u1 mtrxor(Matrix d,u1 rd,u1 cd,Matrix o,u1 not_con) {
-	return mtrxopr(d,rd,cd,o,not_con,OR);
-}
-
-u1 mtrxand(Matrix d,u1 rd,u1 cd,Matrix o,u1 not_con) {
-	return mtrxopr(d,rd,cd,o,not_con,AND);
-}
-
-u1 mtrxxor(Matrix d,u1 rd,u1 cd,Matrix o,u1 not_con) {
-	return mtrxopr(d,rd,cd,o,not_con,XOR);
-}
-
-#undef AND
-#undef OR
-#undef XOR
-
-u1 mtrxclr(Matrix m) {
-	if(m) {
-		u2* ptr=m->values;
-		while(ptr!=m->values+m->size*m->size) {
-			if(*ptr!=0) {
-				*ptr=0;
-				u4 val=ptr-m->values;
-				u1 c=val%m->size;
-				u1 r=val%m->size;
-				nodpsh(m,r,c);
-			}
-			ptr++;
-		}
-		return 1;
-	}
-	return 0;
-}
-
-u1 mtrxchg(Matrix m,u1* r,u1* c,u2* v) {
-	if(m) {
-		if(nodpop(m,r,c)) {
-			*v=*(m->values+*c+(*r)*m->size);
 			return 1;
 		}
 	}
 	return 0;
 }
 
-//prueba
-
-#include <stdio.h>
-
-void changes(Matrix m) {
-	u1 r,c;
-	u2 v;
-	while(mtrxchg(m,&r,&c,&v)) {
-		printf("(%u,%u)->%u\n",r,c,v);
+u1 mtrget(Matrix m,u1 r,u1 c,u2* v) {
+	if(m && inm(r,c,m)) {
+		*v=*(m->mini+c+r*m->cs);
+		return 1;
 	}
-}
-
-void mtrxprt(Matrix m) {
-	for(u1 r=0;r<m->size;r++) {
-		for(u1 c=0;c<m->size;c++) {
-			u2 v;
-			mtrxget(m,r,c,&v);
-			printf("%03u ",v);
-		}
-		printf("\n");
-	}
-}
-
-#define so(A) sizeof(A)
-
-int main() {
-	printf("%li %li %li\n",so(u1),so(u2),so(u4));
-	Matrix m=mtrxnew(3);
-	mtrxset(m,1,1,2);
-	mtrxset(m,2,2,3);
-	mtrxset(m,0,0,1);
-	Matrix d=mtrxnew(10);
-	mtrxor(d,5,5,m,0);
-	changes(d);
-	mtrxprt(d);
-	mtrxdel(&m);
-	mtrxdel(&d);
 	return 0;
 }
+
+#undef inlim
+#undef inm
+
+void mtrclr(Matrix m) {
+	for(u1 r=0;r<m->rs;r++) {
+		for(u1 c=0;c<m->cs;c++) {
+			mtrset(m,r,c,0);
+		}
+	}
+}
+
+u1 mtrchg(Matrix m,u1* r,u1* c,u2* v) {
+	if(m) return nodpop(m,r,c,v);
+	return 0;
+}
+
 

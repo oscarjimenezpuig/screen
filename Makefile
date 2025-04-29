@@ -82,6 +82,6 @@ check:
 #MAKEFILE VARIABLE
 
 NAME = screen 
-SCRS = matrix.c
-INCLUDES = 
+SCRS = xvideo.c matrix.c screen.c
+INCLUDES = -lX11
 
