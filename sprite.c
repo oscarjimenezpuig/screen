@@ -2,7 +2,7 @@
 ============================================================
   Fichero: sprite.c
   Creado: 16-05-2025
-  Ultima Modificacion: divendres, 16 de maig de 2025, 20:39:22
+  Ultima Modificacion: dijous, 22 de maig de 2025, 11:43:03
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -99,13 +99,22 @@ static void ascdef() {
 }
 
 static u1 dirall(u1 id) {
-	//da las identidades redefinibles
+	char* const CRC="!\"#$%&/()[]/*+,-.:;><?@=\\^_{}|~";
+	if(id>='0' && id<='9') return 0;
+	if(id>='A' && id<='Z') return 0;
+	char* ptr=CRC;
+	while(*ptr!='\0') {
+		if(*ptr==id) return 0;
+		ptr++;
+	}
 	return 1;
 }
 
-#include <stdio.h> //dbg
+static u1 inafl(u1 flag,u1 inv) {
+	return ((!inv && flag) || (inv && !flag));
+}
 
-static void sprset(u1 id,u2 x,u2 y,u1 r,Flip f,u1 o) {
+static void sprset(u1 id,u2 x,u2 y,u1 r,Flip f,u1 v,u1 o) {
 	Sprite* s=sprites+id;
 	u1* ptr=*s;
 	u1 i,j;
@@ -113,7 +122,7 @@ static void sprset(u1 id,u2 x,u2 y,u1 r,Flip f,u1 o) {
 	while(ptr!=*s+8) {
 		i=(f&HOR)?(r*8):0;
 		for(u1 k=128;k>0;k=k>>1) {
-			if(*ptr & k) {
+			if(inafl((*ptr & k),v)) {
 				for(u1 vi=0;vi<r;vi++) {
 					for(u1 vj=0;vj<r;vj++) {
 						if(o) on(x+i+vi,y+j+vj);
@@ -138,26 +147,14 @@ u1 snew(u1 id,u1 a,u1 b,u1 c,u1 d,u1 e,u1 f,u1 g,u1 h) {
 	return 0;
 }
 
-void son(u1 id,u2 x,u2 y,u1 r,Flip f) {
-	sprset(id,x,y,r,f,1);
+void son(u1 id,u2 x,u2 y,u1 r,Flip f,u1 v) {
+	ascdef();
+	sprset(id,x,y,r,f,v,1);
 }
 
-void soff(u1 id,u2 x,u2 y,u1 r,Flip f) {
-	sprset(id,x,y,r,f,0);
+void soff(u1 id,u2 x,u2 y,u1 r,Flip f,u1 v) {
+	ascdef();
+	sprset(id,x,y,r,f,v,0);
 }
-	
-//prueba
 
-#include <stdio.h>
-
-int main() {
-	Color green={0,255,0};
-	Color black={0,0,0};
-	ini(green,black,300,300);
-	snew(1,7,15,7,98,126,98,2,14);
-	son('A',50,50,10,NFL);
-	fls();
-	getchar();
-	end();
-}
 
