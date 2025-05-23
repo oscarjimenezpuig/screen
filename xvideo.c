@@ -2,7 +2,7 @@
 ============================================================
   Fichero: xvideo.c
   Creado: 20-03-2024
-  Ultima Modificacion: diumenge, 16 de juny de 2024, 13:53:18
+  Ultima Modificacion: divendres, 23 de maig de 2025, 11:39:23
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -142,4 +142,7 @@ int x_inkey(KeySym* keysym) {
 	return return_type;
 }
 
+char* x_keystr(KeySym keysym) {
+	return XKeysymToString(keysym);
+}
 

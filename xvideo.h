@@ -2,7 +2,7 @@
 ============================================================
   Fichero: xvideo.h
   Creado: 20-03-2024
-  Ultima Modificacion: divendres, 25 d’abril de 2025, 11:52:01
+  Ultima Modificacion: divendres, 23 de maig de 2025, 11:37:53
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -50,6 +50,9 @@ void x_flush();
 //hace flush sacando todo lo de la pantalla
 
 int x_inkey(KeySym* keysym);
-//lectura de las teclas, retorna un valor diferente a 0 si se detecta y devuelve el KeySym
+//lectura de las teclas, retorna 1 si hay pulsacion o -1 si se deja de pulsar, 0 si no hay accion
+
+char* x_keystr(KeySym keysym);
+//pasa una tecla a una cadena
 
 #endif /* XVIDEO_H */
