@@ -2,7 +2,7 @@
 ============================================================
   Fichero: sprite.c
   Creado: 16-05-2025
-  Ultima Modificacion: dijous, 22 de maig de 2025, 11:43:03
+  Ultima Modificacion: dimecres, 28 de maig de 2025, 07:59:50
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -95,11 +95,12 @@ static void ascdef() {
 		ascnew('}',DATA(0,112,16,12,16,16,112,0));
 		ascnew('|',DATA(0,16,16,16,16,16,16,0));
 		ascnew('~',DATA(0,20,40,0,0,0,0,0));
+		ascnew(' ',DATA(0,0,0,0,0,0,0,0));
 	}
 }
 
 static u1 dirall(u1 id) {
-	char* const CRC="!\"#$%&/()[]/*+,-.:;><?@=\\^_{}|~";
+	char* const CRC="!\"#$%&/()[]/*+,-.:;><?@=\\^_{}|~ ";
 	if(id>='0' && id<='9') return 0;
 	if(id>='A' && id<='Z') return 0;
 	char* ptr=CRC;

@@ -2,7 +2,7 @@
 ============================================================
   Fichero: inout.h
   Creado: 22-05-2025
-  Ultima Modificacion: divendres, 23 de maig de 2025, 14:30:36
+  Ultima Modificacion: dimecres, 28 de maig de 2025, 16:28:38
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -35,8 +35,8 @@ void ston(char* s);
 void stoff(char* s);
 //quita la cadena (el cursor avanza un caracter)
 
-u1* inkey();
-//devuelve una matriz de las teclas activas, se incorporan:
+s1 kread();
+//devuelve un numero positivo si la tecla es press o negativo si es release, 0 si no hay pulsacion:
 //escape=27
 //delete=127
 //left=26
@@ -48,13 +48,16 @@ u1* inkey();
 //enter=1
 //El resto, letras o numeros siguen su codigo ascii habitual
 
-u1 isprs(u1 key);
+u1 kison(u1 key);
 //dice si una tecla esta siendo pulsada
 
-u1 input(u1 len,char* str);
-//introduccion a partir de la pantalla de cadena alfanumerica de longitud maxima len (
-//evuelve la longitud real. La cadena se muestra en pantalla desde el cursor
+void koff(u1 key);
+//desconecta una tecla
 
+u1 stin(char* prompt,u1 len,char* str);
+//entrada de una cadena caracter a caracter:
+//LEFT/RIGHT desplaza por los caracteres
+//UP/DOWN se muestran los diferentes caracteres
+//ENTER se almacena la cadena que tenemos hasta ese momento
+//ESCAPE se obtiene la cadena vacia
 
-//TODO Se ha de programar inkey para que de señal de si se pulsa tecla (o hay release) podria
-//ser dando un resultado negativo
