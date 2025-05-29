@@ -2,7 +2,7 @@
 ============================================================
   Fichero: inout.c
   Creado: 22-05-2025
-  Ultima Modificacion: dimecres, 28 de maig de 2025, 16:30:30
+  Ultima Modificacion: dijous, 29 de maig de 2025, 14:29:09
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -103,18 +103,28 @@ void koff(u1 key) {
 	if(key<KPSIZ) keyprs[key]=0;
 }
 
-static u1 chrptd(s1 dir) {
-	const u1 LEN=68;
-	char* const CRC="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&/()[]/*+,-.:;><?@=\\^_{}|~ ";
-	static char* ptr=CRC;
-	if(dir==1) {
-		ptr++;
-		if(*ptr=='\0') ptr=CRC;
-	} else if(dir==-1) {
-		if(*ptr=='0') {
-			ptr=CRC+LEN;
+static u1 chrptd(s1 dir,u1 shift) {
+	char* const CRN="0123456789 ";
+	char* const CRA="ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+	char* const CRC="!\"#$%&/()[]/*+,-.:;><?@=\\^_{}|~ ";
+	const u1 CRNS=11;
+	const u1 CRAS=27;
+	const u1 CRCS=32;
+	static char* ptr=CRN;
+	static u1 type=0;
+	if(shift) {
+		type=(type+1)%3;
+		if(type==0) ptr=CRN;
+		else if(type==1) ptr=CRA;
+		else if(type==2) ptr=CRC;
+	} else {
+		if(dir==1) {
+			ptr++;
+			if(*ptr=='\0') ptr=(type==0)?CRN:(type==1)?CRA:CRC;
+		} else if(dir==-1) {
+			if(*ptr=='0') ptr=(type==0)?CRN+CRNS:(type==1)?CRA+CRAS:CRC+CRCS;
+			ptr--;
 		}
-		ptr--;
 	}
 	return *ptr;
 }
@@ -160,11 +170,12 @@ static u1 arrinp(char* str) {
 	return ptr-str;
 }
 
-u1 input(char* prompt,u1 len,char* str) {
+u1 stin(char* prompt,u1 len,char* str) {
 	for(u1 k=0;k<len;k++) str[k]=' ';
 	str[len]='\0';
 	u1 finish=0;
 	u1 poses=0;
+	str[poses]=chrptd(0,0);
 	visinp(prompt,str,poses);
 	fls();
 	while(!finish) {
@@ -175,14 +186,16 @@ u1 input(char* prompt,u1 len,char* str) {
 			} else if(code==RIGHT && poses<len) {
 				poses++;
 			} else if(code==UP) {
-				str[poses]=chrptd(-1);
+				str[poses]=chrptd(-1,0);
 			} else if(code==DOWN) {
-				str[poses]=chrptd(1);
+				str[poses]=chrptd(1,0);
 			} else if(code==ENTER) {
 				finish=1;
 			} else if(code==ESCAPE) {
 				*str='\0';
 				finish=1;
+			} else if(code==SHIFT) {
+				str[poses]=chrptd(0,1);
 			}
 			koff(code);
 			erainp(prompt,len);
