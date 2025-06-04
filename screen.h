@@ -2,10 +2,13 @@
 ============================================================
   Fichero: screen.h
   Creado: 15-05-2025
-  Ultima Modificacion: divendres, 16 de maig de 2025, 11:57:38
+  Ultima Modificacion: dimecres, 4 de juny de 2025, 10:15:38
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
+
+#ifndef SCREEN_H
+#define SCREEN_H
 
 #include <stdlib.h>
 
@@ -44,7 +47,7 @@ u1 get(u2 x,u2 y);
 void clr();
 //pone en off todos los pixeles y los borra
 
-
+#endif /* SCREEN_H */
 
 
 

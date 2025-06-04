@@ -82,6 +82,6 @@ check:
 #MAKEFILE VARIABLE
 
 NAME = screen 
-SCRS = xvideo.c screen.c sprite.c inout.c
+SCRS = xvideo.c screen.c sprite.c inout.c geometry.c
 INCLUDES = -lX11
 

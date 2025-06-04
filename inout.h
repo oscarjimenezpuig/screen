@@ -2,7 +2,7 @@
 ============================================================
   Fichero: inout.h
   Creado: 22-05-2025
-  Ultima Modificacion: dimecres, 28 de maig de 2025, 16:28:38
+  Ultima Modificacion: dilluns, 2 de juny de 2025, 10:06:37
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -23,17 +23,11 @@
 #define SPACE 32
 #define ENTER 1
 
-void at(u2 x,u2 y);
-//coloca el cursor en una posicion
+void ston(u2* x,u2* y,s1 dx,s1 dy,u1 ratio,Attribute attribute,char* s);
+//pone una cadena en x y y, el desplazamiento por cada caracter viene dado por dx y dy
 
-void attr(u1 ratio,u1 inverse);
-//establecimiento de la ratio y del inverse (atributos)
-
-void ston(char* s);
-//pone una cadena (el cursor avanza un caracter)
-
-void stoff(char* s);
-//quita la cadena (el cursor avanza un caracter)
+void stoff(u2* x,u2* y,s1 dx,s1 dy,u1 ratio,Attribute attribute,char* s);
+//quita la cadena, idem que al poner una cadena
 
 s1 kread();
 //devuelve un numero positivo si la tecla es press o negativo si es release, 0 si no hay pulsacion:
@@ -54,7 +48,7 @@ u1 kison(u1 key);
 void koff(u1 key);
 //desconecta una tecla
 
-u1 stin(char* prompt,u1 len,char* str);
+u1 stin(u2 x,u2 y,s1 dx,s1 dy,u1 ratio,Attribute attribute,char* prompt,u1 len,char* str);
 //entrada de una cadena caracter a caracter:
 //LEFT/RIGHT desplaza por los caracteres
 //UP/DOWN se muestran los diferentes caracteres

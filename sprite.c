@@ -2,7 +2,7 @@
 ============================================================
   Fichero: sprite.c
   Creado: 16-05-2025
-  Ultima Modificacion: dimecres, 28 de maig de 2025, 07:59:50
+  Ultima Modificacion: dilluns, 2 de juny de 2025, 09:40:57
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -115,15 +115,15 @@ static u1 inafl(u1 flag,u1 inv) {
 	return ((!inv && flag) || (inv && !flag));
 }
 
-static void sprset(u1 id,u2 x,u2 y,u1 r,Flip f,u1 v,u1 o) {
+static void sprset(u1 id,u2 x,u2 y,u1 r,Attribute a,u1 o) {
 	Sprite* s=sprites+id;
 	u1* ptr=*s;
 	u1 i,j;
-	j=(f&VER)?(r*8):0;
+	j=(a&FLV)?(r*8):0;
 	while(ptr!=*s+8) {
-		i=(f&HOR)?(r*8):0;
+		i=(a&FLH)?(r*8):0;
 		for(u1 k=128;k>0;k=k>>1) {
-			if(inafl((*ptr & k),v)) {
+			if(inafl((*ptr & k),(a & INV))) {
 				for(u1 vi=0;vi<r;vi++) {
 					for(u1 vj=0;vj<r;vj++) {
 						if(o) on(x+i+vi,y+j+vj);
@@ -131,9 +131,9 @@ static void sprset(u1 id,u2 x,u2 y,u1 r,Flip f,u1 v,u1 o) {
 					}
 				}
 			}
-			i=i+((f&HOR)?-r:r);
+			i=i+((a&FLH)?-r:r);
 		}
-		j=j+((f&VER)?-r:r);
+		j=j+((a&FLV)?-r:r);
 		ptr++;
 	}
 }
@@ -148,14 +148,14 @@ u1 snew(u1 id,u1 a,u1 b,u1 c,u1 d,u1 e,u1 f,u1 g,u1 h) {
 	return 0;
 }
 
-void son(u1 id,u2 x,u2 y,u1 r,Flip f,u1 v) {
+void son(u1 id,u2 x,u2 y,u1 r,Attribute a) {
 	ascdef();
-	sprset(id,x,y,r,f,v,1);
+	sprset(id,x,y,r,a,1);
 }
 
-void soff(u1 id,u2 x,u2 y,u1 r,Flip f,u1 v) {
+void soff(u1 id,u2 x,u2 y,u1 r,Attribute a) {
 	ascdef();
-	sprset(id,x,y,r,f,v,0);
+	sprset(id,x,y,r,a,0);
 }
 
 

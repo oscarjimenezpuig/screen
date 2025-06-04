@@ -2,7 +2,7 @@
 ============================================================
   Fichero: inout.c
   Creado: 22-05-2025
-  Ultima Modificacion: dijous, 29 de maig de 2025, 14:29:09
+  Ultima Modificacion: dilluns, 2 de juny de 2025, 10:40:19
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -11,38 +11,25 @@
 
 #define KPSIZ 128
 
-static u2 cx=0;
-static u2 cy=0;
-static u1 ratio=1;
-static u1 inverse=0;
 static u1 keyprs[KPSIZ];
 
-void at(u2 x,u2 y) {
-	cx=x;
-	cy=y;
-}
-
-void attr(u1 r,u1 i) {
-	ratio=r;
-	inverse=i;
-}
-
-static void stprt(char* s,u1 on) {
+static void stprt(u2* x,u2* y, s1 dx,s1 dy,u1 r,Attribute a,char* s,u1 on) {
 	char* ptr=s;
 	while(*ptr!='\0' && ptr-s<STRSIZ) {
-		if(on) son(*ptr,cx,cy,ratio,NFL,inverse);
-		else soff(*ptr,cx,cy,ratio,NFL,inverse);
+		if(on) son(*ptr,*x,*y,r,a);
+		else soff(*ptr,*x,*y,r,a);
 		ptr++;
-		cx+=ratio*8;
+		*x+=dx*r*8;
+		*y+=dy*r*8;
 	}
 }
 
-void ston(char* s) {
-	stprt(s,1);
+void ston(u2* x,u2* y,s1 dx,s1 dy,u1 r,Attribute a,char* s) {
+	stprt(x,y,dx,dy,r,a,s,1);
 }
 
-void stoff(char* s) {
-	stprt(s,0);
+void stoff(u2* x,u2* y,s1 dx,s1 dy,u1 r,Attribute a,char* s) {
+	stprt(x,y,dx,dy,r,a,s,0);
 }
 
 static void keyprsinit() {
@@ -129,34 +116,41 @@ static u1 chrptd(s1 dir,u1 shift) {
 	return *ptr;
 }
 
-static void erainp(char* intro,u1 len) {
+static void erainp(u2 x,u2 y,s1 dx,s1 dy,u1 r,char* intro,u1 len) {
 	char* ptr=intro;
-	u2 f=0;
-	u2 c=0;
+	u2 f=y;
+	u2 c=x;
 	while(*ptr!='\0') {
-		soff(' ',c,f,ratio,NFL,1);
-		c+=8*ratio;
+		soff(' ',c,f,r,INV);
+		c+=dx*8*r;
+		f+=dy*8*r;
 		ptr++;
 	}
 	for(u2 l=0;l<len;l++) {
-		soff(' ',c,f,ratio,NFL,1);
-		c+=8*ratio;
+		soff(' ',c,f,r,INV);
+		c+=dx*8*r;
+		f+=dy*8*r;
 	}
 }
 
-static void visinp(char* intro,char* str,u1 pos) {
+static void visinp(u2 x,u2 y,s1 dx,s1 dy,u1 r,Attribute a,char* intro,char* str,u1 pos) {
 	char* ptr=intro;
-	u2 f=0;
-	u2 c=0;
+	u2 f=y;
+	u2 c=x;
 	while(*ptr!='\0') {
-		son(*ptr,c,f,ratio,NFL,inverse);
-		c+=8*ratio;
+		son(*ptr,c,f,r,a);
+		c+=dx*8*r;
+		f+=dy*8*r;
 		ptr++;
 	}
 	ptr=str;
+	Attribute atr=a;
 	while(*ptr!='\0') {
-		son(*ptr,c,f,ratio,NFL,(pos==ptr-str));
-		c+=8*ratio;
+		if(pos==ptr-str) atr |= INV;
+		else atr &= (~INV);
+		son(*ptr,c,f,r,atr);
+		c+=dx*8*r;
+		f+=dy*8*r;
 		ptr++;
 	}
 }
@@ -170,21 +164,21 @@ static u1 arrinp(char* str) {
 	return ptr-str;
 }
 
-u1 stin(char* prompt,u1 len,char* str) {
+u1 stin(u2 x,u2 y,s1 dx,s1 dy,u1 r,Attribute a,char* prompt,u1 len,char* str) {
 	for(u1 k=0;k<len;k++) str[k]=' ';
 	str[len]='\0';
 	u1 finish=0;
 	u1 poses=0;
 	str[poses]=chrptd(0,0);
-	visinp(prompt,str,poses);
+	visinp(x,y,dx,dy,r,a,prompt,str,poses);
 	fls();
 	while(!finish) {
 		s1 code=kread();
 		if(code>0) {
 			if(code==LEFT && poses>0) {
-				poses--;
+				str[--poses]=chrptd(0,0);
 			} else if(code==RIGHT && poses<len) {
-				poses++;
+				str[++poses]=chrptd(0,0);
 			} else if(code==UP) {
 				str[poses]=chrptd(-1,0);
 			} else if(code==DOWN) {
@@ -198,8 +192,8 @@ u1 stin(char* prompt,u1 len,char* str) {
 				str[poses]=chrptd(0,1);
 			}
 			koff(code);
-			erainp(prompt,len);
-			if(!finish) visinp(prompt,str,poses);
+			erainp(x,y,dx,dy,r,prompt,len);
+			if(!finish) visinp(x,y,dx,dy,r,a,prompt,str,poses);
 			fls();
 		}
 	}
@@ -211,23 +205,4 @@ u1 stin(char* prompt,u1 len,char* str) {
 
 
 
-//prueba
-
-#include <stdio.h>
-
-int main() {
-	Color a={255,255,0};
-	Color b={0,0,0};
-	ini(a,b,400,400);
-	attr(4,1);
-	char hola[6];
-	printf("len=%i\n",input("HOLA",5,hola));
-	at(100,200);
-	attr(5,0);
-	ston(hola);
-	fls();
-repeat:
-	if(kread()!=ESCAPE) goto repeat; 
-	end();
-}
 
