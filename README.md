@@ -41,5 +41,11 @@ Las teclas usadas para hacer stin son:
   ENTER se almacena la cadena que tenemos hasta ese momento
   ESCAPE se obtiene la cadena vacia
   SHIFT pasamos de numerica a alfanumerica a signos.
+archivo geometry:
+  funciones:
+    void ron(u2 xi,u2 yi,u2 xf,u2 yf) -> conexion de una recta con origen xi,yi y final xf,yf
+    void roff(u2 xi,u2 yi,u2 xf,u2 yf) -> desconexion de una recta con origen xi,yi y final xf,yf
+    void pon(u1 edges,u2* edge) -> conexion de un poligono a partir del numero de vertices y las coordenadas. El poligon es cerrado.
+    void poff(u1 edges,u2* edge) -> desconexion de un poligono (igual que la conexion de un poligono)
     
     
