@@ -29,5 +29,17 @@ archivo inout:
   constantes de metateclas:
     ESCAPE,DELETE,LEFT,RIGTH,UP,DOWN,SHIFT,SPACE,ENTER
   funciones:
+    void ston(u2* x,u2* y,s1 dx,s1 dy,u1 ratio,Attribute attribute,char* s)-> cadena en on en la posicion con la ratio y attributos dados, el desplazamiento por cada caracter viene dado por dx y dy
+    void stoff(u2* x,u2* y,s1 dx,s1 dy,u1 ratio,Attribute attribute,char* s) -> cadena en off, idem que al poner una cadena
+    s1 kread() -> devuelve un numero positivo si la tecla es press o negativo si es release, 0 si no hay pulsacion. Devuelve codigo ascii en teclas numericas, alfanumericas y signos y los valores de las metateclas.
+    u1 kison(u1 key) -> dice si una tecla por su codigo esta siendo pulsada
+    void koff(u1 key) -> apaga una tecla
+    u1 stin(u2 x,u2 y,s1 dx,s1 dy,u1 ratio,Attribute attribute,char* prompt,u1 len,char* str) -> entrada de una cadena caracter a caracter, se coloca un prompt en la posicion dada con el desplazamiento de las letras dados, los atributos y la ratio vienen dados. len es la longitud maxima de la cadena que entraremos, esta cadena se guardara en str. La funcion devuelve la longitud real de la cadena. 
+Las teclas usadas para hacer stin son:
+  LEFT/RIGHT desplaza por los caracteres
+  UP/DOWN se muestran los diferentes caracteres
+  ENTER se almacena la cadena que tenemos hasta ese momento
+  ESCAPE se obtiene la cadena vacia
+  SHIFT pasamos de numerica a alfanumerica a signos.
     
     
