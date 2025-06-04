@@ -25,3 +25,9 @@ archivo sprite:
     void snew(u1 id,u1 a,u1 b,u1 c,u1 d,u1 e,u1 f,u1 g,u1 h) -> definicion de un sprite 8x8 a partir de la identidad del sprite y de los 8 valores u1
     void son(u1 sprite,u2 x,u2 y,u1 ratio,Attribute attribute) -> se conectan los pixeles del sprite en la posicion dada con la ratio y los atributos dados
     void soff(u1 sprite,u2 x,u2 y,u1 ratio,Attribute attribute) -> se desconectan los pixeles del sprite en la posicion dada con la ratio y los atributos dados
+archivo inout:
+  constantes de metateclas:
+    ESCAPE,DELETE,LEFT,RIGTH,UP,DOWN,SHIFT,SPACE,ENTER
+  funciones:
+    
+    
