@@ -50,4 +50,5 @@ u1 stin(u2 x,u2 y,s1 dx,s1 dy,u1 ratio,Attribute attribute,char* prompt,u1 len,c
 //UP/DOWN se muestran los diferentes caracteres
 //ENTER se almacena la cadena que tenemos hasta ese momento
 //ESCAPE se obtiene la cadena vacia
+//SHIFT pasamos de numerico a alfanumerico a signos
 
