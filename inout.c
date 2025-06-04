@@ -9,6 +9,7 @@
 
 #include "inout.h"
 
+#define STRSIZ 256
 #define KPSIZ 128
 
 static u1 keyprs[KPSIZ];
