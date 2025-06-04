@@ -9,10 +9,6 @@
 
 #include "sprite.h"
 
-#define STRSIZ 256
-
-//typedef char String[256];
-
 #define ESCAPE 27
 #define DELETE 127
 #define LEFT 26
