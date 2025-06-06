@@ -2,7 +2,7 @@
 ============================================================
   Fichero: screen.c
   Creado: 15-05-2025
-  Ultima Modificacion: divendres, 16 de maig de 2025, 13:18:45
+  Ultima Modificacion: divendres, 6 de juny de 2025, 10:22:19
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -145,6 +145,15 @@ void rfl(u2 x,u2 y,u2 w,u2 h) {
 		}
 	}
 	x_flush();
+}
+
+void rev() {
+	X_Color brg=ink;
+	ink=paper;
+	paper=brg;
+	u2 w=8*(rw-1);
+	u2 h=rh;
+	rfl(0,0,w,h);
 }
 
 void on(u2 x,u2 y) {
