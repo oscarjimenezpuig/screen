@@ -2,7 +2,7 @@
 ============================================================
   Fichero: screen.h
   Creado: 15-05-2025
-  Ultima Modificacion: dimecres, 4 de juny de 2025, 10:15:38
+  Ultima Modificacion: divendres, 6 de juny de 2025, 09:58:21
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -34,6 +34,9 @@ void fls();
 
 void rfl(u2 x,u2 y,u2 w,u2 h);
 //actualiza la pantalla en el rectangulo dado
+
+void rev();
+//invierte el color de fondo y de tinta y hace un reflush de toda la pantalla
 
 void on(u2 x,u2 y);
 //coloca el color del ink en una posicion
